@@ -1,23 +1,48 @@
 # Image Deblurring based on Diffusion Models
 
-The code and pre-trained models of the paper "Image Deblurring based on Diffusion Models" will be released in this repository.
+The code and pre-trained models of the paper "Image Deblurring based on Diffusion Models" will be released in this
+repository.
 
 <hr />
 
-> **Abstract:** *Image deblurring is a very challenging task due to the various obscuration factors in the real world. While the supervised deep learning approach showed great power in solving image deblurring problems,the models required a lot of labeled data, which were difficult to collect.
-        This paper presents a novel approach that utilized pretrained large diffusion models to generate potential image features, which enhanced the training process and generalization performance.
-        The pretrained diffusion model first generated synthetic image features through learning the potential distribution of the data.
-        These synthetic image features were used together with the existing real data for model training to expand the
-        training set and improve the generalization ability of the model.
-        The proposed deblurring model was termed as Sliding window restoration transformer (Swintormer).
-        Experiments on mainstream testing datasets showed that the new method achieved the state-of-the-art performance
-        and had a significant advantage in the computational efficiency.
-        Extensive ablation studies have been conducted to analyze the effect of each network module to the final
-        performance.* 
+> **Abstract:** *This article introduces a sliding window model for defocus deblurring that achieves the best
+performance to date with extremely low memory usage. Named Swintormer, the method utilizes a diffusion model to generate
+latent prior features that assist in restoring more detailed images. It also extends the sliding window strategy to
+specialized Transformer blocks for efficient inference. Additionally, we have further optimized Multiply-Accumulate
+operations (Macs). Compared to the currently top-performing GRL method, our Swintormer model drastically reduces
+computational complexity from 140.35 GMACs to 8.02 GMacs, while also improving the Signal-to-Noise Ratio (SNR) for
+defocus deblurring from 27.04 dB to 27.07 dB. This new method allows for the processing of higher resolution images on
+devices with limited memory, significantly expanding potential application scenarios. The article concludes with an
+ablation study that provides an in-depth analysis of the impact of each network module on final performance. The source
+code and model will be available at the following website: https://github.com/bnm6900030/swintormer.*
 <hr />
+
+## Installation
+- Python 3.8.10
+- PyTorch 2.0.0
+- NVIDIA GPU + [CUDA](https://developer.nvidia.com/cuda-downloads)
+
+```bash
+# Clone the github repo and go to the default directory 'swintormer'.
+git clone https://github.com/bnm6900030/swintormer.git
+cd swintormer
+pip install -r requirements.txt
+```
+
+## Training
+python basicsr/train.py -opt /home/lab/code1/IR/options/train/swintormer/train_swintormer.yml
+
+## Testing
+python basicsr/test.py
 
 ## Visual Results
+
 Part visual results are available below. More visual results will come soon.
 
+## Acknowledgements
+
+This code is built on  [BasicSR](https://github.com/XPixelGroup/BasicSR) and [Restormer](https://github.com/swz30/Restormer).
+
 ## Contact
+
 If you have any question, please contact chenkang@cau.edu.cn

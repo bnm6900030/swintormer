@@ -1,0 +1,124 @@
+# general settings
+name: train_swintormer
+model_type: MYModel
+scale: 1
+num_gpu: 1
+manual_seed: 100
+is_train: True
+dist: False
+cumulative_period: [12000, 4080000 ]
+
+datasets:
+  train:
+    name: TrainSet
+    type: Dataset_DefocusDeblur_DualPixel_16bit
+    dataroot_gt: /home/lab/code1/Defocus_Deblurring/Datasets/train/DPDD/target_crops
+    dataroot_lqL: /home/lab/code1/Defocus_Deblurring/Datasets/train/DPDD/inputL_crops
+    dataroot_lqR: /home/lab/code1/Defocus_Deblurring/Datasets/train/DPDD/inputR_crops
+    dataroot_lqC:  /home/lab/code1/Defocus_Deblurring/Datasets/train/DPDD/inputC_crops
+    filename_tmpl: '{}'
+    io_backend:
+      type: disk
+    geometric_augs: true
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 11
+    batch_size_per_gpu: 11
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+    ### -------------Progressive training--------------------------
+    mini_batch_sizes: [ 9,9,9,9,9,9 ]             # Batch size per gpu
+#    mini_batch_sizes: [ 1,1,1,1,1,1 ]             # Batch size per gpu
+    iters: [ 12000,12000,12000,12000,12000,12000 ]
+    gt_size: 512   # Max patch size for progressive training
+#    gt_sizes: [128, 160, 192, 256, 320,384]  # Patch sizes for progressive training.
+    gt_sizes: [256,256,256,256,256,256]  # Patch sizes for progressive training.
+    ### ------------------------------------------------------------
+
+  val:
+    name: ValSet
+    type: Dataset_DefocusDeblur_DualPixel_16bit
+    dataroot_gt: /home/lab/code1/Defocus_Deblurring/Datasets/val/DPDD/target_crops
+    dataroot_lqL: /home/lab/code1/Defocus_Deblurring/Datasets/val/DPDD/inputL_crops
+    dataroot_lqR: /home/lab/code1/Defocus_Deblurring/Datasets/val/DPDD/inputR_crops
+    dataroot_lqC: /home/lab/code1/Defocus_Deblurring/Datasets/val/DPDD/inputC_crops
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: Swintormer
+  inp_channels: 6
+  dim: 48
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+#  resume_state: /home/lab/code1/IR/experiments/train_MYIR_scratch/training_states/80000.state
+  resume_state: ~
+
+# training settings
+train:
+  total_iter: 5000000
+  warmup_iter: -1  # no warm up
+  use_grad_clip: true
+  ema_decay: 0.999
+  optim_g:
+    type: AdamW
+    lr: !!float 3e-4
+    weight_decay: !!float 1e-4
+    betas: [ 0.9, 0.99 ]
+#  optim_g:
+#    type: Lion
+#    lr: !!float 5e-5
+#    weight_decay: !!float 1e-3
+#    betas: [ 0.95, 0.98 ]
+
+  scheduler:
+    type: CosineAnnealingRestartCyclicLR
+    periods: [ 12000, 840000 ]
+    restart_weights: [ 1,1 ]
+    eta_mins: [ 0.0003,0.00001 ]
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+#  perceptual_opt:
+#    type: PerceptualLoss
+#    perceptual_weight: 1.0
+#    layer_weights:
+#        'conv5_4': 1.
+#        'conv4_1': 1.
+#        'conv3_1': 1.
+#        'conv2_1': 1.
+#        'conv1_1': 1.
+
+# validation settings
+val:
+  val_freq: !!float 4000
+  save_img: false
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 4000
+  save_checkpoint_freq: !!float 8e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
