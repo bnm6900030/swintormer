@@ -30,11 +30,13 @@ pip install -r requirements.txt
 ```
 
 ## Training
+```bash
 python basicsr/train.py -opt /home/lab/code1/IR/options/train/swintormer/train_swintormer.yml
-
+```
 ## Testing
+```bash
 python basicsr/test.py
-
+```
 ## Visual Results
 
 Part visual results are available below. More visual results will come soon.
@@ -42,6 +44,19 @@ Part visual results are available below. More visual results will come soon.
 ## Acknowledgements
 
 This code is built on  [BasicSR](https://github.com/XPixelGroup/BasicSR) and [Restormer](https://github.com/swz30/Restormer).
+
+## Citations
+If this work is helpful for your research, please consider citing the following BibTeX entry.
+```
+@misc{chen2024efficient,
+      title={Efficient Image Deblurring Networks based on Diffusion Models}, 
+      author={Kang Chen and Yuanjie Liu},
+      year={2024},
+      eprint={2401.05907},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
 
 ## Contact
 
