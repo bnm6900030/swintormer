@@ -57,7 +57,7 @@ def tensor2img(tensor, rgb2bgr=True, out_type=np.uint8, min_max=(0, 1)):
     return result
 
 
-def show_ternor(tensor):
+def show_tersor(tensor):
     img = tensor2img(tensor)
     plt.imshow(img)
     plt.show()
@@ -90,31 +90,31 @@ log_path = list(filter(lambda x: x.__contains__('.log'), log_path))
 def get_time(name):
     return int(log_time.search(name)[0]) + int(log_day.search(name)[0]) * 1000000
 
+if __name__ == "__main__":
+    log_path.sort(key=get_time)
 
-log_path.sort(key=get_time)
+    epcho_num = 0
+    for log_f in log_path:
+        with open('/home/lab/code1/IR/experiments/train_MYIR_scratch/' + log_f, 'r') as f:
+            for line in f:
+                if line.__contains__('[epoch'):
+                    iter_now = int(iter_pat.search(line)[0].replace(',', ''))
+                    loss = float(loss_pat.search(line)[0].replace(',', ''))
+                    epoch_now = int(epoch_pat.search(line)[0].replace(',', ''))
+                    epoch_loss_dict[epoch_now] = loss
+                    loss_nums.append(loss)
+                    iter_nums.append(iter_now)
 
-epcho_num = 0
-for log_f in log_path:
-    with open('/home/lab/code1/IR/experiments/train_MYIR_scratch/' + log_f, 'r') as f:
-        for line in f:
-            if line.__contains__('[epoch'):
-                iter_now = int(iter_pat.search(line)[0].replace(',', ''))
-                loss = float(loss_pat.search(line)[0].replace(',', ''))
-                epoch_now = int(epoch_pat.search(line)[0].replace(',', ''))
-                epoch_loss_dict[epoch_now] = loss
-                loss_nums.append(loss)
-                iter_nums.append(iter_now)
-
-                epcho_num += 1
-            elif line.__contains__('# psnr:'):
-                val_iters.append(iter_now)
-                val_nums.append(float(val_pat.search(line)[0].replace(',', '')))
-                epoch_vals_dict[epoch_now] = float(val_pat.search(line)[0].replace(',', ''))
+                    epcho_num += 1
+                elif line.__contains__('# psnr:'):
+                    val_iters.append(iter_now)
+                    val_nums.append(float(val_pat.search(line)[0].replace(',', '')))
+                    epoch_vals_dict[epoch_now] = float(val_pat.search(line)[0].replace(',', ''))
 
 
-plt.plot(epoch_vals_dict.keys(), epoch_vals_dict.values())
-plt.plot(epoch_loss_dict.keys(), epoch_loss_dict.values())
-plt.show()
+    plt.plot(epoch_vals_dict.keys(), epoch_vals_dict.values())
+    plt.plot(epoch_loss_dict.keys(), epoch_loss_dict.values())
+    plt.show()
 
 
 

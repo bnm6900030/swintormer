@@ -37,6 +37,11 @@ python basicsr/train.py -opt /home/lab/code1/IR/options/train/swintormer/train_s
 ```bash
 python basicsr/test.py
 ```
+## Generate feature
+```bash
+python generate_feature.py
+```
+
 ## Visual Results
 
 Part visual results are available below. More visual results will come soon.
