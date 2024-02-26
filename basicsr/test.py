@@ -9,7 +9,7 @@ from skimage import metrics
 from sklearn.metrics import mean_absolute_error
 from natsort import natsorted
 from glob import glob
-from basicsr.archs.eff_arch import Eff as model_r
+from basicsr.archs.Swintormer_arch import Swintormer as model_r
 import lpips
 import torch.nn.functional as F
 
