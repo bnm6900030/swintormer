@@ -192,7 +192,7 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="/home/lab/code1/latent/models/ldm/bsr_sr/model.ckpt",
+        default="./ldm/bsr_sr/model.ckpt",
         help="path to checkpoint of model",
     )
     parser.add_argument(
